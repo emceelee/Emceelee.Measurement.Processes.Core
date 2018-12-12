@@ -6,6 +6,7 @@ namespace Emceelee.Measurement.Summarization.Core
 {
     public static class Utility
     {
+        //Create Delegates for performance improvements vs Reflection
         public static Func<TObj, TProp> CreateGetterDelegate<TObj, TProp>(string propName)
         {
             return (Func<TObj, TProp>)Delegate.CreateDelegate(typeof(Func<TObj, TProp>), null, typeof(TObj).GetProperty(propName).GetGetMethod());
