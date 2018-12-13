@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Emceelee.Measurement.Summarization.Core;
 using Emceelee.Measurement.Summarization.Core.Rules;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Emceelee.Measurement.Summarization.Test
@@ -48,6 +49,62 @@ namespace Emceelee.Measurement.Summarization.Test
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Summarization_BadProperty_Getter()
+        {
+            var records = new List<Quantity>();
+
+            var summarization = new Summarization<Quantity>(records);
+            summarization.Configure("FlowTime", "", new SumRule<Quantity>());
+            var result = summarization.Execute();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Summarization_BadProperty_Setter()
+        {
+            var records = new List<Quantity>();
+
+            var summarization = new Summarization<Quantity>(records);
+            summarization.Configure("", "FlowTime", new SumRule<Quantity>());
+            var result = summarization.Execute();
+        }
+
+        [TestMethod]
+        public void Summarization_Delegates1()
+        {
+            var records = new List<Quantity>();
+            records.Add(new Quantity() { FlowTime = 60, GasVolume = 20 });
+            records.Add(new Quantity() { FlowTime = 40, GasVolume = 30 });
+            records.Add(new Quantity() { FlowTime = 50, GasVolume = 40 });
+
+            var summarization = new Summarization<Quantity>(records);
+            summarization.Configure("FlowTime", q => q.FlowTime, new SumRule<Quantity>());
+            summarization.Configure((s, r) => s.Volume = r, "GasVolume", new SumRule<Quantity>());
+            var result = summarization.Execute();
+
+            Assert.AreEqual(150, result.FlowTime);
+            Assert.AreEqual(90, result.Volume);
+        }
+
+        [TestMethod]
+        public void Summarization_SumRule_Delegates2()
+        {
+            var records = new List<Quantity>();
+            records.Add(new Quantity() { FlowTime = 60, GasVolume = 20 });
+            records.Add(new Quantity() { FlowTime = 40, GasVolume = 30 });
+            records.Add(new Quantity() { FlowTime = 50, GasVolume = 40 });
+
+            var summarization = new Summarization<Quantity>(records);
+            summarization.Configure((s, r) => s.FlowTime = r, q => q.FlowTime, new SumRule<Quantity>());
+            summarization.Configure((s, r) => s.Volume = r, q => q.GasVolume, new SumRule<Quantity>());
+            var result = summarization.Execute();
+
+            Assert.AreEqual(150, result.FlowTime);
+            Assert.AreEqual(90, result.Volume);
+        }
+
+        [TestMethod]
         public void Summarization_SumRule_NullRecords()
         {
             var records = new List<Quantity>();
@@ -73,7 +130,8 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>(records);
             //weight HV by FlowTime
-            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.FlowTime));
+            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.FlowTime),
+                                                                    new SimpleAverageRule<Quantity>());
             var result = summarization.Execute();
 
             Assert.AreEqual(1750, result.HeatingValue);
@@ -88,7 +146,8 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>(records);
             //weight HV by FlowTime
-            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.GasVolume));
+            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.GasVolume),
+                                                                    new SimpleAverageRule<Quantity>());
             var result = summarization.Execute();
 
             Assert.AreEqual(1250, result.HeatingValue);
@@ -104,7 +163,8 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>(records);
             //weight HV by FlowTime
-            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.FlowTime));
+            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.FlowTime),
+                                                                    new SimpleAverageRule<Quantity>());
             var result = summarization.Execute();
 
             Assert.AreEqual(1750, result.HeatingValue);
@@ -119,7 +179,8 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>(records);
             //weight HV by FlowTime
-            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.FlowTime));
+            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.FlowTime), 
+                                                                    new SimpleAverageRule<Quantity>());
             var result = summarization.Execute();
 
             Assert.AreEqual(1500, result.HeatingValue);
@@ -154,6 +215,30 @@ namespace Emceelee.Measurement.Summarization.Test
             var result = summarization.Execute();
 
             Assert.AreEqual(1500, result.HeatingValue);
+        }
+
+        [TestMethod]
+        public void Summarization_GenericRule()
+        {
+            var records = new List<Quantity>();
+            records.Add(new Quantity() { ContractDay = new DateTime(2018, 1, 1), GasVolume = 150 });
+            records.Add(new Quantity() { ContractDay = new DateTime(2018, 1, 2), GasVolume = 200 });
+            records.Add(new Quantity() { ContractDay = new DateTime(2018, 1, 3), GasVolume = 250 });
+
+            var summarization = new Summarization<Quantity>(records);
+
+            summarization.Configure("HeatingValue", summarization.GetNullDelegate<double?>(), new GenericRule<Quantity, double?>(r => 10.0));
+            summarization.Configure("Comment", summarization.GetNullDelegate<string>(), new GenericRule<Quantity, string>(r => "String"));
+            summarization.Configure("Count", summarization.GetNullDelegate<int>(), new GenericRule<Quantity, int>(r => r.Count()));
+            summarization.Configure("InventoryVolume", summarization.GetNullDelegate<double?>(), 
+                new GenericRule<Quantity, double?>(r => r.FirstOrDefault(q => q.ContractDay.Day == 1)?.GasVolume));
+
+            var result = summarization.Execute();
+
+            Assert.AreEqual(10.0, result.HeatingValue);
+            Assert.AreEqual("String", result.Comment);
+            Assert.AreEqual(3, result.Count);
+            Assert.AreEqual(150, result.InventoryVolume);
         }
 
         [TestMethod]

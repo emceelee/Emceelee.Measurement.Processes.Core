@@ -13,14 +13,24 @@ namespace Emceelee.Measurement.Summarization.Core
             _records.AddRange(records);
         }
 
-        public void Configure<TProperty>(string summaryProperty, string inputProperty, SummaryRuleBase<TObj, TProperty> rule)
+        public void Configure<TProperty>(string summaryProperty, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
         {
-            _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, inputProperty, rule));
+            _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, inputProperty, rules));
         }
 
-        public void Configure<TProperty>(string summaryProperty, Func<TObj, TProperty> inputDelegate, SummaryRuleBase<TObj, TProperty> rule)
+        public void Configure<TProperty>(string summaryProperty, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
         {
-            _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, inputDelegate, rule));
+            _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, inputDelegate, rules));
+        }
+
+        public void Configure<TProperty>(Action<Summary, TProperty> summaryDelegate, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
+        {
+            _configs.Add(new SummaryConfig<TObj, TProperty>(summaryDelegate, inputProperty, rules));
+        }
+
+        public void Configure<TProperty>(Action<Summary, TProperty> summaryDelegate, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
+        {
+            _configs.Add(new SummaryConfig<TObj, TProperty>(summaryDelegate, inputDelegate, rules));
         }
 
         public Summary Execute()
@@ -37,6 +47,11 @@ namespace Emceelee.Measurement.Summarization.Core
                 return summary;
             }
 
+            return null;
+        }
+
+        public Func<TObj, TProperty> GetNullDelegate<TProperty>()
+        {
             return null;
         }
     }

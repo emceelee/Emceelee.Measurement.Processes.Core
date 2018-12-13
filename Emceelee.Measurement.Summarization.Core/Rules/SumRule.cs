@@ -7,14 +7,16 @@ namespace Emceelee.Measurement.Summarization.Core.Rules
 {
     public class SumRule<T> : SummaryRuleBase<T, double?>
     {
-        protected override double? InternalExecute(IEnumerable<T> records, Func<T, double?> func)
+        protected override bool InternalExecute(IEnumerable<T> records, Func<T, double?> func, out double? result)
         {
+            result = null;
+
             if(records.Any(t => func(t) != null))
             {
-                double sum = records.Sum(t => func(t) ?? 0);
-                return sum;
+                result = records.Sum(t => func(t) ?? 0);
             }
-            return null;
+
+            return true;
         }
     }
 }

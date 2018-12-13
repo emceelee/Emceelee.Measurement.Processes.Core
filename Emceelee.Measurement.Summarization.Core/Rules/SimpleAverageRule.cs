@@ -8,9 +8,9 @@ namespace Emceelee.Measurement.Summarization.Core.Rules
 {
     public class SimpleAverageRule<T> : SummaryRuleBase<T, double?>
     {
-        protected override double? InternalExecute(IEnumerable<T> records, Func<T, double?> func)
+        protected override bool InternalExecute(IEnumerable<T> records, Func<T, double?> func, out double? result)
         {
-            double? average = null;
+            result = null;
 
             if (records.Any(t => func(t) != null))
             {
@@ -19,12 +19,11 @@ namespace Emceelee.Measurement.Summarization.Core.Rules
 
                 if (count != 0)
                 {
-                    average = sum / count;
+                    result = sum / count;
                 }
-
-                return average;
             }
-            return null;
+
+            return true;
         }
     }
 }

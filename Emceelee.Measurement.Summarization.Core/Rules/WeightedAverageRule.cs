@@ -14,9 +14,9 @@ namespace Emceelee.Measurement.Summarization.Core.Rules
             WeightFunction = weightFunc;
         }
 
-        protected override double? InternalExecute(IEnumerable<T> records, Func<T, double?> func)
+        protected override bool InternalExecute(IEnumerable<T> records, Func<T, double?> func, out double? result)
         {
-            double? average = null;
+            result = null;
 
             if (records.Any(t => func(t) != null))
             {
@@ -24,17 +24,14 @@ namespace Emceelee.Measurement.Summarization.Core.Rules
                 double denominator = records.Sum(t => WeightFunction(t) ?? 0);
                 if(denominator != 0)
                 {
-                    average = weightedSum / denominator;
-                }
-                else
-                {
-                    var backup = new SimpleAverageRule<T>();
-                    average = backup.Execute(records, func);
+                    result = weightedSum / denominator;
+                    return true;
                 }
 
-                return average;
+                //Can't calculate a weighted average
+                return false;
             }
-            return null;
+            return true;
         }
     }
 }
