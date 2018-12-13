@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Emceelee.Measurement.Summarization.Core
 {
     public class Summarization<TObj>
     {
-        private List<TObj> _records = new List<TObj>();
         private List<ISummaryConfig<TObj>> _configs = new List<ISummaryConfig<TObj>>();
-
-        public Summarization(IEnumerable<TObj> records)
-        {
-            _records.AddRange(records);
-        }
 
         public void Configure<TProperty>(string summaryProperty, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
         {
@@ -33,15 +28,15 @@ namespace Emceelee.Measurement.Summarization.Core
             _configs.Add(new SummaryConfig<TObj, TProperty>(summaryDelegate, inputDelegate, rules));
         }
 
-        public Summary Execute()
+        public Summary Execute(IEnumerable<TObj> records)
         {
-            if(_records.Count > 0)
+            if(records.ToList().Count > 0)
             {
                 var summary = new Summary();
 
                 foreach(var config in _configs)
                 {
-                    config.Execute(summary, _records);
+                    config.Execute(summary, records);
                 }
 
                 return summary;
