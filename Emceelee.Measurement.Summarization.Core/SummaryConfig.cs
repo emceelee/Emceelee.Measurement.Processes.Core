@@ -60,11 +60,19 @@ namespace Emceelee.Measurement.Summarization.Core
         public void Execute(Summary summary, IEnumerable<TObj> records)
         {
             TProperty result = default(TProperty);
-            
+            bool success = false;
+
+            //execute rules until success
             foreach (var rule in Rules)
             {
-                if (rule.Execute(records, Getter, out result))
+                TProperty temp;
+                success |= rule.Execute(records, Getter, out temp);
+
+                if(success)
+                {
+                    result = temp;
                     break;
+                }
             }
 
             Setter?.Invoke(summary, result);
