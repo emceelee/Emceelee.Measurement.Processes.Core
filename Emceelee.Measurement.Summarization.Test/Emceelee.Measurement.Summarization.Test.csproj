@@ -60,6 +60,10 @@
       <Project>{e1393789-1bd5-45c2-9971-5234b853e908}</Project>
       <Name>Emceelee.Measurement.Summarization.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Emceelee.Summarization.Core\Emceelee.Summarization.Core.csproj">
+      <Project>{25ff14e5-af61-4d29-918b-d7480f8bf46a}</Project>
+      <Name>Emceelee.Summarization.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

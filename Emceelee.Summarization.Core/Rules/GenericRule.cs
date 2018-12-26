@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Emceelee.Measurement.Summarization.Core.Rules
+using Emceelee.Summarization.Core;
+
+namespace Emceelee.Summarization.Core.Rules
 {
     public class GenericRule<TObj, TProperty> : SummaryRuleBase<TObj, TProperty>
     {
@@ -13,7 +15,7 @@ namespace Emceelee.Measurement.Summarization.Core.Rules
         {
             SummaryFunction = func;
         }
-        protected override bool InternalExecute(IEnumerable<TObj> records, Func<TObj, TProperty> func, out TProperty result)
+        protected override bool InternalExecute(IEnumerable<TObj> records, Func<TObj, TProperty> func, ISummaryContext context, out TProperty result)
         {
             result = default(TProperty);
 

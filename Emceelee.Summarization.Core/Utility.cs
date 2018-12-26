@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Emceelee.Measurement.Summarization.Core
+namespace Emceelee.Summarization.Core
 {
     public static class Utility
     {
@@ -16,6 +16,7 @@ namespace Emceelee.Measurement.Summarization.Core
             }
             throw new ArgumentException($"{propName} is not a property of {typeof(TObj).Name}");
         }
+
         public static Action<TObj, TProp> CreateSetterDelegate<TObj, TProp>(string propName)
         {
             var propInfo = typeof(TObj).GetProperty(propName);

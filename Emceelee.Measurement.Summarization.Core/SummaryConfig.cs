@@ -2,80 +2,53 @@
 using System.Collections.Generic;
 using System.Text;
 
+using Emceelee.Summarization.Core;
+
 namespace Emceelee.Measurement.Summarization.Core
 {
     public interface ISummaryConfig<TObj>
     {
-        void Execute(Summary summary, IEnumerable<TObj> records);
+        void Execute(Summary summary, IEnumerable<TObj> records, SummaryContext sc = null);
     }
 
-    public class SummaryConfig<TObj, TProperty> : ISummaryConfig<TObj>
+    public class SummaryConfig<TObj, TProperty> : SummaryConfigBase<TObj, TProperty>, ISummaryConfig<TObj>
     {
         public SummaryConfig(string summaryProperty, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
+            : base(inputProperty, rules)
         {
             SummaryProperty = summaryProperty;
-            InputProperty = inputProperty;
-            Rules = rules;
-
-            Getter = Utility.CreateGetterDelegate<TObj, TProperty>(inputProperty);
             Setter = Utility.CreateSetterDelegate<Summary, TProperty>(summaryProperty);
         }
 
         public SummaryConfig(string summaryProperty, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
+            : base(inputDelegate, rules)
         {
             SummaryProperty = summaryProperty;
-            InputProperty = String.Empty;
-            Rules = rules;
-
-            Getter = inputDelegate;
             Setter = Utility.CreateSetterDelegate<Summary, TProperty>(summaryProperty);
         }
 
         public SummaryConfig(Action<Summary, TProperty> summaryDelegate, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
+            : base(inputProperty, rules)
         {
             SummaryProperty = string.Empty;
-            InputProperty = inputProperty;
-            Rules = rules;
-
-            Getter = Utility.CreateGetterDelegate<TObj, TProperty>(inputProperty);
             Setter = summaryDelegate;
         }
 
         public SummaryConfig(Action<Summary, TProperty> summaryDelegate, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
+            : base(inputDelegate, rules)
         {
             SummaryProperty = string.Empty;
-            InputProperty = string.Empty;
-            Rules = rules;
-
-            Getter = inputDelegate;
             Setter = summaryDelegate;
         }
 
         public string SummaryProperty { get; }
-        public string InputProperty { get; }
-        public SummaryRuleBase<TObj, TProperty>[] Rules { get; }
-        public Func<TObj, TProperty> Getter { get; }
         public Action<Summary, TProperty> Setter { get; }
 
-        public void Execute(Summary summary, IEnumerable<TObj> records)
+        public void Execute(Summary summary, IEnumerable<TObj> records, SummaryContext sc)
         {
-            TProperty result = default(TProperty);
-            bool success = false;
-
-            //execute rules until success
-            foreach (var rule in Rules)
-            {
-                TProperty temp;
-                success |= rule.Execute(records, Getter, out temp);
-
-                if(success)
-                {
-                    result = temp;
-                    break;
-                }
-            }
-
-            Setter?.Invoke(summary, result);
+            SummaryResult<TProperty> result = base.Execute(records, sc);
+            
+            Setter?.Invoke(summary, result.Value);
         }
     }
 }

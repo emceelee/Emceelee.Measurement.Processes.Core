@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Emceelee.Measurement.Summarization.Core.Rules
+using Emceelee.Summarization.Core;
+
+namespace Emceelee.Summarization.Core.Rules
 {
     public class WeightedAverageRule<T> : SummaryRuleBase<T, double?>
     {
@@ -14,7 +16,7 @@ namespace Emceelee.Measurement.Summarization.Core.Rules
             WeightFunction = weightFunc;
         }
 
-        protected override bool InternalExecute(IEnumerable<T> records, Func<T, double?> func, out double? result)
+        protected override bool InternalExecute(IEnumerable<T> records, Func<T, double?> func, ISummaryContext context, out double? result)
         {
             result = null;
 

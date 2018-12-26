@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Emceelee.Summarization.Core;
+
 namespace Emceelee.Measurement.Summarization.Core
 {
     public class Summarization<TObj>
@@ -28,11 +30,13 @@ namespace Emceelee.Measurement.Summarization.Core
             _configs.Add(new SummaryConfig<TObj, TProperty>(summaryDelegate, inputDelegate, rules));
         }
 
-        public Summary Execute(IEnumerable<TObj> records)
+        public Summary Execute(SummaryGroup<TObj> group)
         {
+            var records = group.Records;
+
             if(records.ToList().Count > 0)
             {
-                var summary = new Summary();
+                var summary = new Summary(group.Context);
 
                 foreach(var config in _configs)
                 {
