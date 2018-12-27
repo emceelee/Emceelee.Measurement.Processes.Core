@@ -10,8 +10,8 @@ namespace Emceelee.Summarization.Core.Rules
 {
     public class GenericRule<TObj, TProperty> : SummaryRuleBase<TObj, TProperty>
     {
-        public Func<IEnumerable<TObj>, TProperty> SummaryFunction { get; }
-        public GenericRule(Func<IEnumerable<TObj>, TProperty> func)
+        public Func<IEnumerable<TObj>, ISummaryContext, TProperty> SummaryFunction { get; }
+        public GenericRule(Func<IEnumerable<TObj>, ISummaryContext, TProperty> func)
         {
             SummaryFunction = func;
         }
@@ -21,7 +21,7 @@ namespace Emceelee.Summarization.Core.Rules
 
             if(SummaryFunction != null)
             {
-                result = SummaryFunction(records);
+                result = SummaryFunction(records, context);
                 return true;
             }
 

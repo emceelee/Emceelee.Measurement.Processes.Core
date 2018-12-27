@@ -7,7 +7,7 @@ namespace Emceelee.Measurement.Summarization.Core
     public class Summary: IMeasurementGroupable
     {
         public SummaryContext Context { get; }
-        public SummaryKey Key { get { return Context.Key; } }
+        public SummaryInfo Info { get { return Context.Info; } }
 
         public Summary(SummaryContext sc)
         {

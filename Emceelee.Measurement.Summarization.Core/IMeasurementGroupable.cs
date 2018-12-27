@@ -8,6 +8,6 @@ namespace Emceelee.Measurement.Summarization.Core
 {
     public interface IMeasurementGroupable
     {
-        SummaryKey Key { get; }
+        SummaryInfo Info { get; }
     }
 }

@@ -11,9 +11,9 @@ namespace Emceelee.Measurement.Summarization.Core
     public class SummaryContext : ISummaryContext
     {
         public int ContractHour { get; }
-        public SummaryKey Key { get; }
+        public SummaryInfo Info { get; }
 
-        public SummaryContext(int contractHour, SummaryKey key)
+        public SummaryContext(int contractHour, SummaryInfo info = null)
         {
             if (contractHour < 0 || contractHour > 23)
             {
@@ -21,7 +21,7 @@ namespace Emceelee.Measurement.Summarization.Core
             }
 
             ContractHour = contractHour;
-            Key = key;
+            Info = info;
         }
 
         public DateTime ProductionDateStart
@@ -29,25 +29,25 @@ namespace Emceelee.Measurement.Summarization.Core
             get
             {
                 //aggregate
-                if(Key.Month == default(DateTime))
+                if(Info.Month == default(DateTime))
                 {
                     return DateTime.MinValue;
                 }
 
                 //monthly
-                if(Key.Day == default(DateTime))
+                if(Info.Day == default(DateTime))
                 {
-                    return Key.Month.AddHours(ContractHour);
+                    return Info.Month.AddHours(ContractHour);
                 }
 
                 //daily
-                if(Key.Hour == null)
+                if(Info.Hour == null)
                 {
-                    return Key.Day.AddHours(ContractHour);
+                    return Info.Day.AddHours(ContractHour);
                 }
 
                 //hourly
-                return Key.Day.AddHours(Key.Hour ?? 0);
+                return Info.Day.AddHours(Info.Hour ?? 0);
             }
         }
         public DateTime ProductionDateEnd
@@ -55,25 +55,25 @@ namespace Emceelee.Measurement.Summarization.Core
             get
             {
                 //aggregate
-                if (Key.Month == default(DateTime))
+                if (Info.Month == default(DateTime))
                 {
                     return DateTime.MaxValue;
                 }
 
                 //monthly
-                if (Key.Day == default(DateTime))
+                if (Info.Day == default(DateTime))
                 {
-                    return Key.Month.AddMonths(1).AddHours(ContractHour);
+                    return Info.Month.AddMonths(1).AddHours(ContractHour);
                 }
 
                 //daily
-                if (Key.Hour == null)
+                if (Info.Hour == null)
                 {
-                    return Key.Day.AddDays(1).AddHours(ContractHour);
+                    return Info.Day.AddDays(1).AddHours(ContractHour);
                 }
 
                 //hourly
-                return Key.Day.AddHours((Key.Hour ?? 0) + 1);
+                return Info.Day.AddHours((Info.Hour ?? 0) + 1);
             }
         }
     }

@@ -27,7 +27,7 @@ namespace Emceelee.Measurement.Summarization.Test
             var records = new List<Quantity>();
             var group = new SummaryGroup<Quantity>(records, 
                 new SummaryContext(7, 
-                    new SummaryKey("Meter", 
+                    new SummaryInfo("Meter", 
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -47,7 +47,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -68,7 +68,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -85,7 +85,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -104,7 +104,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -127,7 +127,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -150,7 +150,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -172,7 +172,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -194,7 +194,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -217,7 +217,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -239,7 +239,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -261,7 +261,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -283,7 +283,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
@@ -305,17 +305,17 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var group = new SummaryGroup<Quantity>(records,
                 new SummaryContext(7,
-                    new SummaryKey("Meter",
+                    new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)
                 )));
 
             var summarization = new Summarization<Quantity>();
 
-            summarization.Configure("HeatingValue", summarization.GetNullDelegate<double?>(), new GenericRule<Quantity, double?>(r => 10.0));
-            summarization.Configure("Comment", summarization.GetNullDelegate<string>(), new GenericRule<Quantity, string>(r => "String"));
-            summarization.Configure("Count", summarization.GetNullDelegate<int>(), new GenericRule<Quantity, int>(r => r.Count()));
+            summarization.Configure("HeatingValue", summarization.GetNullDelegate<double?>(), new GenericRule<Quantity, double?>((r, context) => 10.0));
+            summarization.Configure("Comment", summarization.GetNullDelegate<string>(), new GenericRule<Quantity, string>((r, context) => "String"));
+            summarization.Configure("Count", summarization.GetNullDelegate<int>(), new GenericRule<Quantity, int>((r, context) => r.Count()));
             summarization.Configure("IndexOn", summarization.GetNullDelegate<double?>(), 
-                new GenericRule<Quantity, double?>(r => r.OrderBy(q => q.ProductionDateStart).FirstOrDefault()?.GasVolume));
+                new GenericRule<Quantity, double?>((r, context) => r.OrderBy(q => q.ProductionDateStart).FirstOrDefault()?.GasVolume));
 
             var result = summarization.Execute(group);
 
@@ -326,7 +326,7 @@ namespace Emceelee.Measurement.Summarization.Test
         }
 
         [TestMethod]
-        [Timeout(30000)]
+        [Timeout(60000)]
         public void Summarization_PerformanceTest_Hourly()
         {
             var results = data.CreateHourlySummaryGroups(0);
@@ -424,7 +424,7 @@ namespace Emceelee.Measurement.Summarization.Test
                 {
                     quantities.Add(new Quantity()
                     {
-                        Key = new SummaryKey("Meter" + i,
+                        Info = new SummaryInfo("Meter" + i,
                             new DateTime(dtCurrent.Year, dtCurrent.Month, 1),
                             new DateTime(dtCurrent.Year, dtCurrent.Month, dtCurrent.Day),
                             dtCurrent.Hour),
@@ -450,6 +450,6 @@ namespace Emceelee.Measurement.Summarization.Test
         public DateTime ProductionDateStart { get; set; }
         public DateTime ProductionDateEnd { get; set; }
 
-        public SummaryKey Key { get; set; }
+        public SummaryInfo Info { get; set; }
     }
 }

@@ -48,7 +48,7 @@
     <Compile Include="SummaryConfig.cs" />
     <Compile Include="SummaryContext.cs" />
     <Compile Include="SummaryGroup.cs" />
-    <Compile Include="SummaryKey.cs" />
+    <Compile Include="SummaryInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Emceelee.Summarization.Core\Emceelee.Summarization.Core.csproj">

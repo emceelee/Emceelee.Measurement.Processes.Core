@@ -8,7 +8,7 @@ namespace Emceelee.Measurement.Summarization.Core
 {
     public static class Extensions
     {
-        public static List<SummaryGroup<T>> CreateSummaryGroups<T>(this IEnumerable<T> records, int contractHour, Func<T, SummaryKey> keySelector)
+        public static List<SummaryGroup<T>> CreateSummaryGroups<T>(this IEnumerable<T> records, int contractHour, Func<T, SummaryInfo> keySelector)
             where T : IMeasurementGroupable
         {
             var groups = records.GroupBy
@@ -27,12 +27,31 @@ namespace Emceelee.Measurement.Summarization.Core
             return results;
         }
 
+        public static List<SummaryGroup<T>> CreateSummaryGroups<T, TKey>(this IEnumerable<T> records, int contractHour, Func<T, TKey> keySelector, Func<TKey, SummaryInfo> infoSelector)
+            where T : IMeasurementGroupable
+        {
+            var groups = records.GroupBy
+                (
+                    t => keySelector(t),
+                    t => t
+                );
+
+            var results = groups.Select(group =>
+            {
+                var summaryGroup = new SummaryGroup<T>(group.ToList(), new SummaryContext(contractHour, infoSelector?.Invoke(group.Key)));
+
+                return summaryGroup;
+            }).ToList();
+
+            return results;
+        }
+
         public static List<SummaryGroup<T>> CreateAggregateSummaryGroups<T>(this IEnumerable<T> records, int contractHour)
             where T : IMeasurementGroupable
         {
             return CreateSummaryGroups(records, 
                     contractHour, 
-                    t => new SummaryKey(string.Empty)
+                    t => new SummaryInfo(string.Empty)
                 );
         }
 
@@ -41,7 +60,7 @@ namespace Emceelee.Measurement.Summarization.Core
         {
             return CreateSummaryGroups(records,
                     contractHour,
-                    t => new SummaryKey(t.Key.EntityId)
+                    t => new SummaryInfo(t.Info.EntityId)
                 );
         }
 
@@ -50,7 +69,7 @@ namespace Emceelee.Measurement.Summarization.Core
         {
             return CreateSummaryGroups(records,
                     contractHour,
-                    t => new SummaryKey(t.Key.EntityId, t.Key.Month)
+                    t => new SummaryInfo(t.Info.EntityId, t.Info.Month)
                 );
         }
 
@@ -59,7 +78,7 @@ namespace Emceelee.Measurement.Summarization.Core
         {
             return CreateSummaryGroups(records,
                     contractHour,
-                    t => new SummaryKey(t.Key.EntityId, t.Key.Month, t.Key.Day)
+                    t => new SummaryInfo(t.Info.EntityId, t.Info.Month, t.Info.Day)
                 );
         }
 
@@ -68,7 +87,7 @@ namespace Emceelee.Measurement.Summarization.Core
         {
             return CreateSummaryGroups(records,
                     contractHour,
-                    t => new SummaryKey(t.Key.EntityId, t.Key.Month, t.Key.Day, t.Key.Hour)
+                    t => new SummaryInfo(t.Info.EntityId, t.Info.Month, t.Info.Day, t.Info.Hour)
                 );
         }
     }

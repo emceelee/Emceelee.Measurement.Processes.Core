@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Emceelee.Measurement.Summarization.Core
 {
-    public struct SummaryKey : IEquatable<SummaryKey>
+    public class SummaryInfo : IEquatable<SummaryInfo>
     {
         public string EntityId { get; }
         public DateTime Month { get; }
         public DateTime Day { get; }
         public int? Hour { get; }
 
-        public SummaryKey(string entityId, DateTime month = default(DateTime), DateTime day = default(DateTime), int? hour = null)
+        public SummaryInfo(string entityId, DateTime month = default(DateTime), DateTime day = default(DateTime), int? hour = null)
         {
             EntityId = entityId;
             Month = month;
@@ -22,7 +22,7 @@ namespace Emceelee.Measurement.Summarization.Core
         }
 
         //override for performance
-        public bool Equals(SummaryKey other)
+        public bool Equals(SummaryInfo other)
         {
             return this.EntityId == other.EntityId &&
                 this.Month == other.Month &&
@@ -32,7 +32,7 @@ namespace Emceelee.Measurement.Summarization.Core
 
         public override bool Equals(object obj)
         {
-            return obj is SummaryKey && this.Equals(obj);
+            return obj is SummaryInfo && this.Equals(obj);
         }
 
         public override int GetHashCode()
