@@ -8,10 +8,10 @@ using Emceelee.Summarization.Core;
 
 namespace Emceelee.Summarization.Core.Rules
 {
-    public class GenericRule<TObj, TProperty> : SummaryRuleBase<TObj, TProperty>
+    public class DelegateRule<TObj, TProperty> : SummaryRuleBase<TObj, TProperty>
     {
         public Func<IEnumerable<TObj>, ISummaryContext, TProperty> SummaryFunction { get; }
-        public GenericRule(Func<IEnumerable<TObj>, ISummaryContext, TProperty> func)
+        public DelegateRule(Func<IEnumerable<TObj>, ISummaryContext, TProperty> func)
         {
             SummaryFunction = func;
         }

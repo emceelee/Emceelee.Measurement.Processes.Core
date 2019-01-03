@@ -8,7 +8,7 @@ namespace Emceelee.Measurement.Summarization.Core
 {
     public interface ISummaryConfig<TObj>
     {
-        void Execute(Summary summary, IEnumerable<TObj> records, SummaryContext sc = null);
+        void Execute(Summary summary, IEnumerable<TObj> records);
     }
 
     public class SummaryConfig<TObj, TProperty> : SummaryConfigBase<TObj, TProperty>, ISummaryConfig<TObj>
@@ -44,9 +44,9 @@ namespace Emceelee.Measurement.Summarization.Core
         public string SummaryProperty { get; }
         public Action<Summary, TProperty> Setter { get; }
 
-        public void Execute(Summary summary, IEnumerable<TObj> records, SummaryContext sc)
+        public void Execute(Summary summary, IEnumerable<TObj> records)
         {
-            SummaryResult<TProperty> result = base.Execute(records, sc);
+            SummaryResult<TProperty> result = base.Execute(records, summary.Context);
             
             Setter?.Invoke(summary, result.Value);
         }

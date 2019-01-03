@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="ISummaryContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rules\GenericRule.cs" />
+    <Compile Include="Rules\DelegateRule.cs" />
     <Compile Include="Rules\SimpleAverageRule.cs" />
     <Compile Include="Rules\SumRule.cs" />
     <Compile Include="Rules\WeightedAverageRule.cs" />

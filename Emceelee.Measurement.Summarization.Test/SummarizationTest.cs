@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Emceelee.Measurement.Summarization.Core;
 using Emceelee.Summarization.Core.Rules;
+using Emceelee.Measurement.Summarization.Core.Rules;
 
 namespace Emceelee.Measurement.Summarization.Test
 {
@@ -302,7 +303,7 @@ namespace Emceelee.Measurement.Summarization.Test
         }
 
         [TestMethod]
-        public void Summarization_GenericRule()
+        public void Summarization_DelegateRule()
         {
             var records = new List<Quantity>();
             records.Add(new Quantity() { GasVolume = 150, ProductionDateStart = new DateTime(2018, 1, 1) });
@@ -317,11 +318,11 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>();
 
-            summarization.Configure("HeatingValue", summarization.GetNullDelegate<double?>(), new GenericRule<Quantity, double?>((r, context) => 10.0));
-            summarization.Configure("Comment", summarization.GetNullDelegate<string>(), new GenericRule<Quantity, string>((r, context) => "String"));
-            summarization.Configure("Count", summarization.GetNullDelegate<int>(), new GenericRule<Quantity, int>((r, context) => r.Count()));
-            summarization.Configure("IndexOn", summarization.GetNullDelegate<double?>(), 
-                new GenericRule<Quantity, double?>((r, context) => r.OrderBy(q => q.ProductionDateStart).FirstOrDefault()?.GasVolume));
+            summarization.Configure("HeatingValue", summarization.GetNullDelegate<double?>(), new DelegateRule<Quantity, double?>((r, context) => 10.0));
+            summarization.Configure("Comment", summarization.GetNullDelegate<string>(), new DelegateRule<Quantity, string>((r, context) => "String"));
+            summarization.Configure("Count", summarization.GetNullDelegate<int>(), new DelegateRule<Quantity, int>((r, context) => r.Count()));
+            summarization.Configure("IndexOn", summarization.GetNullDelegate<double?>(),
+                new DelegateRule<Quantity, double?>((r, context) => r.OrderBy(q => q.ProductionDateStart).FirstOrDefault()?.GasVolume));
 
             var result = summarization.Execute(group);
 
@@ -329,6 +330,29 @@ namespace Emceelee.Measurement.Summarization.Test
             Assert.AreEqual("String", result.Comment);
             Assert.AreEqual(3, result.Count);
             Assert.AreEqual(150, result.IndexOn);
+        }
+
+        [TestMethod]
+        public void Summarization_InventoryOpeningRule()
+        {
+            var records = new List<Quantity>();
+            records.Add(new Quantity() { GasVolume = 150, ProductionDateStart = new DateTime(2018, 1, 1, 7, 0, 0, DateTimeKind.Utc) });
+            records.Add(new Quantity() { GasVolume = 200, ProductionDateStart = new DateTime(2018, 1, 1, 7, 6, 0, DateTimeKind.Utc) });
+            records.Add(new Quantity() { GasVolume = 250, ProductionDateStart = new DateTime(2018, 1, 1, 7, 12, 0, DateTimeKind.Utc) });
+
+            var group = new SummaryGroup<Quantity>(records,
+                new SummaryContext(7,
+                    new SummaryInfo("Meter",
+                        new DateTime(2018, 1, 1)
+                )));
+
+            var summarization = new Summarization<Quantity>();
+
+            summarization.Configure("InventoryVolume", "GasVolume", new InventoryOpeningRule<Quantity>(q => q.ProductionDateStart));
+
+            var result = summarization.Execute(group);
+
+            Assert.AreEqual(150, result.InventoryVolume);
         }
 
         [TestMethod]
