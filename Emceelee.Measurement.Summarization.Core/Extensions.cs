@@ -27,25 +27,6 @@ namespace Emceelee.Measurement.Summarization.Core
             return results;
         }
 
-        public static List<SummaryGroup<T>> CreateSummaryGroups<T, TKey>(this IEnumerable<T> records, int contractHour, Func<T, TKey> keySelector, Func<TKey, SummaryInfo> infoSelector)
-            where T : IMeasurementGroupable
-        {
-            var groups = records.GroupBy
-                (
-                    t => keySelector(t),
-                    t => t
-                );
-
-            var results = groups.Select(group =>
-            {
-                var summaryGroup = new SummaryGroup<T>(group.ToList(), new SummaryContext(contractHour, infoSelector?.Invoke(group.Key)));
-
-                return summaryGroup;
-            }).ToList();
-
-            return results;
-        }
-
         public static List<SummaryGroup<T>> CreateAggregateSummaryGroups<T>(this IEnumerable<T> records, int contractHour)
             where T : IMeasurementGroupable
         {
@@ -55,7 +36,7 @@ namespace Emceelee.Measurement.Summarization.Core
                 );
         }
 
-        public static List<SummaryGroup<T>> CreateMeterSummaryGroups<T>(this IEnumerable<T> records, int contractHour)
+        public static List<SummaryGroup<T>> CreateEntitySummaryGroups<T>(this IEnumerable<T> records, int contractHour)
             where T : IMeasurementGroupable
         {
             return CreateSummaryGroups(records,

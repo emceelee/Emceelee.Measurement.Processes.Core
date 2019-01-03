@@ -8,12 +8,20 @@ using Emceelee.Summarization.Core;
 
 namespace Emceelee.Measurement.Summarization.Core
 {
+    public enum SummaryInterval
+    {
+        Aggregate,
+        Monthly,
+        Daily,
+        Hourly
+    }
+
     public class SummaryContext : ISummaryContext
     {
         public int ContractHour { get; }
         public SummaryInfo Info { get; }
 
-        public SummaryContext(int contractHour, SummaryInfo info = null)
+        public SummaryContext(int contractHour, SummaryInfo info)
         {
             if (contractHour < 0 || contractHour > 23)
             {
@@ -24,56 +32,66 @@ namespace Emceelee.Measurement.Summarization.Core
             Info = info;
         }
 
+        public SummaryInterval Interval
+        {
+            get
+            {
+                if (Info.Month == default(DateTime))
+                {
+                    return SummaryInterval.Aggregate;
+                }
+
+                if (Info.Day == default(DateTime))
+                {
+                    return SummaryInterval.Monthly;
+                }
+
+                if (Info.Hour == null)
+                {
+                    return SummaryInterval.Daily;
+                }
+
+                return SummaryInterval.Hourly;
+            }
+        }
+
         public DateTime ProductionDateStart
         {
             get
             {
-                //aggregate
-                if(Info.Month == default(DateTime))
+                switch(Interval)
                 {
-                    return DateTime.MinValue;
+                    case SummaryInterval.Aggregate:
+                        return DateTime.MinValue;
+                    case SummaryInterval.Monthly:
+                        return Info.Month.AddHours(ContractHour);
+                    case SummaryInterval.Daily:
+                        return Info.Day.AddHours(ContractHour);
+                    case SummaryInterval.Hourly:
+                        return Info.Day.AddHours(Info.Hour ?? 0);
+                    default:
+                        throw new InvalidOperationException();
                 }
-
-                //monthly
-                if(Info.Day == default(DateTime))
-                {
-                    return Info.Month.AddHours(ContractHour);
-                }
-
-                //daily
-                if(Info.Hour == null)
-                {
-                    return Info.Day.AddHours(ContractHour);
-                }
-
-                //hourly
-                return Info.Day.AddHours(Info.Hour ?? 0);
             }
         }
+
         public DateTime ProductionDateEnd
         {
             get
             {
-                //aggregate
-                if (Info.Month == default(DateTime))
+                switch (Interval)
                 {
-                    return DateTime.MaxValue;
+                    case SummaryInterval.Aggregate:
+                        return DateTime.MaxValue;
+                    case SummaryInterval.Monthly:
+                        return Info.Month.AddMonths(1).AddHours(ContractHour);
+                    case SummaryInterval.Daily:
+                        return Info.Day.AddDays(1).AddHours(ContractHour);
+                    case SummaryInterval.Hourly:
+                        return Info.Day.AddHours((Info.Hour ?? 0) + 1);
+                    default:
+                        throw new InvalidOperationException();
                 }
-
-                //monthly
-                if (Info.Day == default(DateTime))
-                {
-                    return Info.Month.AddMonths(1).AddHours(ContractHour);
-                }
-
-                //daily
-                if (Info.Hour == null)
-                {
-                    return Info.Day.AddDays(1).AddHours(ContractHour);
-                }
-
-                //hourly
-                return Info.Day.AddHours((Info.Hour ?? 0) + 1);
             }
         }
     }

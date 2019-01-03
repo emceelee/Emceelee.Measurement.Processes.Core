@@ -13,12 +13,18 @@ namespace Emceelee.Measurement.Summarization.Test
     public class SummarizationTest
     {
         public static List<Quantity> data;
+        public static List<Quantity> data_tickets;
 
         [ClassInitialize]
         public static void Initialize(TestContext tc)
         {
             //1 month of 6-minute data
             data = GenerateTestData();
+            data_tickets = GenerateTestData();
+            foreach(var qty in data_tickets)
+            {
+                qty.GenerateSummaryInfo(qty.TicketId);
+            }
         }
 
         [TestMethod]
@@ -326,11 +332,11 @@ namespace Emceelee.Measurement.Summarization.Test
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(5000)]
         public void Summarization_PerformanceTest_Hourly()
         {
             var results = data.CreateHourlySummaryGroups(0);
-            Assert.AreEqual(744000, results.Count());
+            Assert.AreEqual(74400, results.Count());
 
             Parallel.ForEach(results, group =>
             {
@@ -343,11 +349,11 @@ namespace Emceelee.Measurement.Summarization.Test
         }
 
         [TestMethod]
-        [Timeout(30000)]
+        [Timeout(2000)]
         public void Summarization_PerformanceTest_Daily()
         {
             var results = data.CreateDailySummaryGroups(0);
-            Assert.AreEqual(31000, results.Count());
+            Assert.AreEqual(3100, results.Count());
 
             Parallel.ForEach(results, group =>
             {
@@ -360,11 +366,11 @@ namespace Emceelee.Measurement.Summarization.Test
         }
 
         [TestMethod]
-        [Timeout(30000)]
+        [Timeout(2000)]
         public void Summarization_PerformanceTest_Monthly()
         {
             var results = data.CreateMonthlySummaryGroups(0);
-            Assert.AreEqual(1000, results.Count());
+            Assert.AreEqual(100, results.Count());
 
             Parallel.ForEach(results, group =>
             {
@@ -377,11 +383,11 @@ namespace Emceelee.Measurement.Summarization.Test
         }
 
         [TestMethod]
-        [Timeout(30000)]
+        [Timeout(2000)]
         public void Summarization_PerformanceTest_Meter()
         {
-            var results = data.CreateMeterSummaryGroups(0);
-            Assert.AreEqual(1000, results.Count());
+            var results = data.CreateEntitySummaryGroups(0);
+            Assert.AreEqual(100, results.Count());
 
             Parallel.ForEach(results, group =>
             {
@@ -394,7 +400,7 @@ namespace Emceelee.Measurement.Summarization.Test
         }
 
         [TestMethod]
-        [Timeout(30000)]
+        [Timeout(2000)]
         public void Summarization_PerformanceTest_Aggregate()
         {
             var results = data.CreateAggregateSummaryGroups(0);
@@ -410,46 +416,85 @@ namespace Emceelee.Measurement.Summarization.Test
             });
         }
 
-        //1000 meters, 6 minute records, 1 month
+
+        [TestMethod]
+        [Timeout(2000)]
+        public void Summarization_PerformanceTest_Tickets()
+        {
+            var results = data_tickets.CreateEntitySummaryGroups(0);
+            Assert.AreEqual(10, results.Count());
+
+            Parallel.ForEach(results, group =>
+            {
+                var summarization = new Summarization<Quantity>();
+                summarization.Configure("FlowTime", "FlowTime", new SumRule<Quantity>());
+                summarization.Configure("Volume", "GasVolume", new SumRule<Quantity>());
+                summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.GasVolume));
+                var result = summarization.Execute(group);
+            });
+        }
+
+        //100 meters, 6 minute records, 1 month
         public static List<Quantity> GenerateTestData()
         {
             var dtCurrent = new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             var r = new Random();
 
             var quantities = new List<Quantity>();
-
-            while(dtCurrent.Year == 2018 && dtCurrent.Month == 1)
+            
+            while (dtCurrent.Year == 2018 && dtCurrent.Month == 1)
             {
-                for(int i = 1; i <= 1000; ++i)
+                for (int i = 1; i <= 100; ++i)
                 {
-                    quantities.Add(new Quantity()
+                    string meterId = $"Meter{i}";
+                    string stationId = $"Station{i}";
+                    string ticketId = $"Ticket{i % 10}";
+
+                    var qty = new Quantity()
                     {
-                        Info = new SummaryInfo("Meter" + i,
-                            new DateTime(dtCurrent.Year, dtCurrent.Month, 1),
-                            new DateTime(dtCurrent.Year, dtCurrent.Month, dtCurrent.Day),
-                            dtCurrent.Hour),
+                        MeterId = meterId,
+                        StationId = stationId,
+                        TicketId = ticketId,
+
+                        ProductionDateStart = dtCurrent,
+                        ProductionDateEnd = dtCurrent.AddMinutes(6),
+
                         FlowTime = 10,
                         GasVolume = 9.0 + 2.0 * r.NextDouble(),
                         HeatingValue = 990.0 + 20.0 * r.NextDouble(),
-
-                    });
+                    };
+                    qty.GenerateSummaryInfo(qty.MeterId);
+                    quantities.Add(qty);
                 }
 
                 dtCurrent = dtCurrent.AddMinutes(6);
             }
-            
+
             return quantities;
         }
     }
 
     public class Quantity : IMeasurementGroupable
     {
-        public double? FlowTime { get; set; }
-        public double? GasVolume { get; set; }
-        public double? HeatingValue { get; set; }
+        public string MeterId { get; set; }
+        public string StationId { get; set; }
+        public string TicketId { get; set; }
+
         public DateTime ProductionDateStart { get; set; }
         public DateTime ProductionDateEnd { get; set; }
 
+        public double? FlowTime { get; set; }
+        public double? GasVolume { get; set; }
+        public double? HeatingValue { get; set; }
+
         public SummaryInfo Info { get; set; }
+
+        public void GenerateSummaryInfo(string entityId)
+        {
+            Info = new SummaryInfo(entityId,
+                new DateTime(ProductionDateStart.Year, ProductionDateStart.Month, 1),
+                new DateTime(ProductionDateStart.Year, ProductionDateStart.Month, ProductionDateStart.Day),
+                ProductionDateStart.Hour);
+        }
     }
 }
