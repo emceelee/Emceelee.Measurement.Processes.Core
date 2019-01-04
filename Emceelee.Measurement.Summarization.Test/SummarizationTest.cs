@@ -102,7 +102,7 @@ namespace Emceelee.Measurement.Summarization.Test
         }
 
         [TestMethod]
-        public void Summarization_Delegates1()
+        public void Summarization_SumRule_Delegates1()
         {
             var records = new List<Quantity>();
             records.Add(new Quantity() { FlowTime = 60, GasVolume = 20 });
