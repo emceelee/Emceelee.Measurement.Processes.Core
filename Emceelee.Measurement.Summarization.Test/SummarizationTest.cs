@@ -59,8 +59,8 @@ namespace Emceelee.Measurement.Summarization.Test
                 )));
 
             var summarization = new Summarization<Quantity>();
-            summarization.Configure("FlowTime", "FlowTime", new SumRule<Quantity>());
-            summarization.Configure("Volume", "GasVolume", new SumRule<Quantity>());
+            summarization.Configure(nameof(Summary.FlowTime), nameof(Quantity.FlowTime), new SumRule<Quantity>());
+            summarization.Configure(nameof(Summary.Volume), nameof(Quantity.GasVolume), new SumRule<Quantity>());
             var result = summarization.Execute(group);
 
             Assert.AreEqual(150, result.FlowTime);
@@ -80,7 +80,7 @@ namespace Emceelee.Measurement.Summarization.Test
                 )));
 
             var summarization = new Summarization<Quantity>();
-            summarization.Configure("FlowTime", "", new SumRule<Quantity>());
+            summarization.Configure(nameof(Summary.FlowTime), string.Empty, new SumRule<Quantity>());
             var result = summarization.Execute(group);
         }
 
@@ -97,7 +97,7 @@ namespace Emceelee.Measurement.Summarization.Test
                 )));
 
             var summarization = new Summarization<Quantity>();
-            summarization.Configure("", "FlowTime", new SumRule<Quantity>());
+            summarization.Configure(string.Empty, nameof(Quantity.FlowTime), new SumRule<Quantity>());
             var result = summarization.Execute(group);
         }
 
@@ -116,8 +116,8 @@ namespace Emceelee.Measurement.Summarization.Test
                 )));
 
             var summarization = new Summarization<Quantity>();
-            summarization.Configure("FlowTime", q => q.FlowTime, new SumRule<Quantity>());
-            summarization.Configure((s, r) => s.Volume = r, "GasVolume", new SumRule<Quantity>());
+            summarization.Configure(nameof(Summary.FlowTime), q => q.FlowTime, new SumRule<Quantity>());
+            summarization.Configure(nameof(Summary.Volume), (s, r) => s.Volume = r, nameof(Quantity.GasVolume), new SumRule<Quantity>());
             var result = summarization.Execute(group);
 
             Assert.AreEqual(150, result.FlowTime);
@@ -139,8 +139,8 @@ namespace Emceelee.Measurement.Summarization.Test
                 )));
 
             var summarization = new Summarization<Quantity>();
-            summarization.Configure((s, r) => s.FlowTime = r, q => q.FlowTime, new SumRule<Quantity>());
-            summarization.Configure((s, r) => s.Volume = r, q => q.GasVolume, new SumRule<Quantity>());
+            summarization.Configure(nameof(Summary.FlowTime), (s, r) => s.FlowTime = r, q => q.FlowTime, new SumRule<Quantity>());
+            summarization.Configure(nameof(Summary.Volume), (s, r) => s.Volume = r, q => q.GasVolume, new SumRule<Quantity>());
             var result = summarization.Execute(group);
 
             Assert.AreEqual(150, result.FlowTime);
@@ -162,8 +162,8 @@ namespace Emceelee.Measurement.Summarization.Test
                 )));
 
             var summarization = new Summarization<Quantity>();
-            summarization.Configure("FlowTime", "FlowTime", new SumRule<Quantity>());
-            summarization.Configure("Volume", "GasVolume", new SumRule<Quantity>());
+            summarization.Configure(nameof(Summary.FlowTime), nameof(Quantity.FlowTime), new SumRule<Quantity>());
+            summarization.Configure(nameof(Summary.Volume), nameof(Quantity.GasVolume), new SumRule<Quantity>());
             var result = summarization.Execute(group);
 
             Assert.AreEqual(100, result.FlowTime);
@@ -185,7 +185,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>();
             //weight HV by FlowTime
-            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.FlowTime),
+            summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.FlowTime),
                                                                     new SimpleAverageRule<Quantity>());
             var result = summarization.Execute(group);
 
@@ -207,7 +207,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>();
             //weight HV by FlowTime
-            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.GasVolume),
+            summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.GasVolume),
                                                                     new SimpleAverageRule<Quantity>());
             var result = summarization.Execute(group);
 
@@ -230,7 +230,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>();
             //weight HV by FlowTime
-            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.FlowTime),
+            summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.FlowTime),
                                                                     new SimpleAverageRule<Quantity>());
             var result = summarization.Execute(group);
 
@@ -252,7 +252,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>();
             //weight HV by FlowTime
-            summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.FlowTime), 
+            summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.FlowTime), 
                                                                     new SimpleAverageRule<Quantity>());
             var result = summarization.Execute(group);
 
@@ -274,7 +274,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>();
             //weight HV by FlowTime
-            summarization.Configure("HeatingValue", "HeatingValue", new SimpleAverageRule<Quantity>());
+            summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new SimpleAverageRule<Quantity>());
             var result = summarization.Execute(group);
 
             Assert.AreEqual(1500, result.HeatingValue);
@@ -296,7 +296,7 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>();
             //weight HV by FlowTime
-            summarization.Configure("HeatingValue", "HeatingValue", new SimpleAverageRule<Quantity>());
+            summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new SimpleAverageRule<Quantity>());
             var result = summarization.Execute(group);
 
             Assert.AreEqual(1500, result.HeatingValue);
@@ -318,10 +318,10 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>();
 
-            summarization.Configure("HeatingValue", summarization.GetNullDelegate<double?>(), new DelegateRule<Quantity, double?>((r, context) => 10.0));
-            summarization.Configure("Comment", summarization.GetNullDelegate<string>(), new DelegateRule<Quantity, string>((r, context) => "String"));
-            summarization.Configure("Count", summarization.GetNullDelegate<int>(), new DelegateRule<Quantity, int>((r, context) => r.Count()));
-            summarization.Configure("IndexOn", summarization.GetNullDelegate<double?>(),
+            summarization.Configure(nameof(Summary.HeatingValue), summarization.GetNullDelegate<double?>(), new DelegateRule<Quantity, double?>((r, context) => 10.0));
+            summarization.Configure(nameof(Summary.Comment), summarization.GetNullDelegate<string>(), new DelegateRule<Quantity, string>((r, context) => "String"));
+            summarization.Configure(nameof(Summary.Count), summarization.GetNullDelegate<int>(), new DelegateRule<Quantity, int>((r, context) => r.Count()));
+            summarization.Configure(nameof(Summary.IndexOn), summarization.GetNullDelegate<double?>(),
                 new DelegateRule<Quantity, double?>((r, context) => r.OrderBy(q => q.ProductionDateStart).FirstOrDefault()?.GasVolume));
 
             var result = summarization.Execute(group);
@@ -348,11 +348,35 @@ namespace Emceelee.Measurement.Summarization.Test
 
             var summarization = new Summarization<Quantity>();
 
-            summarization.Configure("InventoryVolume", "GasVolume", new InventoryOpeningRule<Quantity>(q => q.ProductionDateStart));
+            summarization.Configure(nameof(Summary.InventoryVolume), nameof(Quantity.GasVolume), new InventoryOpeningRule<Quantity>(q => q.ProductionDateStart));
 
             var result = summarization.Execute(group);
 
             Assert.AreEqual(150, result.InventoryVolume);
+        }
+
+        [TestMethod]
+        public void Summarization_AggregateException()
+        {
+            var records = new List<Quantity>();
+            records.Add(new Quantity() { FlowTime = 1, GasVolume = 3, HeatingValue = 1000 });
+            records.Add(new Quantity() { FlowTime = 3, GasVolume = 1, HeatingValue = 2000 });
+
+            var group = new SummaryGroup<Quantity>(records,
+                new SummaryContext(7,
+                    new SummaryInfo("Meter",
+                        new DateTime(2018, 1, 1)
+                )));
+
+            var summarization = new Summarization<Quantity>();
+            //weight HV by FlowTime
+            summarization.Configure(nameof(Summary.FlowTime), nameof(Quantity.FlowTime), new ExceptionRule<Quantity, double?>());
+            summarization.Configure(nameof(Summary.Volume), nameof(Quantity.GasVolume), new SumRule<Quantity>());
+            summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new ExceptionRule<Quantity, double?>());
+            var result = summarization.Execute(group);
+
+            Assert.IsNotNull(result.Exceptions);
+            Assert.AreEqual(2, result.Exceptions.InnerExceptions.Count());
         }
 
         [TestMethod]
@@ -365,9 +389,9 @@ namespace Emceelee.Measurement.Summarization.Test
             Parallel.ForEach(results, group =>
             {
                 var summarization = new Summarization<Quantity>();
-                summarization.Configure("FlowTime", "FlowTime", new SumRule<Quantity>());
-                summarization.Configure("Volume", "GasVolume", new SumRule<Quantity>());
-                summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.GasVolume));
+                summarization.Configure(nameof(Summary.FlowTime), nameof(Quantity.FlowTime), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.Volume), nameof(Quantity.GasVolume), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.GasVolume));
                 var result = summarization.Execute(group);
             });
         }
@@ -382,9 +406,9 @@ namespace Emceelee.Measurement.Summarization.Test
             Parallel.ForEach(results, group =>
             {
                 var summarization = new Summarization<Quantity>();
-                summarization.Configure("FlowTime", "FlowTime", new SumRule<Quantity>());
-                summarization.Configure("Volume", "GasVolume", new SumRule<Quantity>());
-                summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.GasVolume));
+                summarization.Configure(nameof(Summary.FlowTime), nameof(Quantity.FlowTime), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.Volume), nameof(Quantity.GasVolume), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.GasVolume));
                 var result = summarization.Execute(group);
             });
         }
@@ -399,9 +423,9 @@ namespace Emceelee.Measurement.Summarization.Test
             Parallel.ForEach(results, group =>
             {
                 var summarization = new Summarization<Quantity>();
-                summarization.Configure("FlowTime", "FlowTime", new SumRule<Quantity>());
-                summarization.Configure("Volume", "GasVolume", new SumRule<Quantity>());
-                summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.GasVolume));
+                summarization.Configure(nameof(Summary.FlowTime), nameof(Quantity.FlowTime), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.Volume), nameof(Quantity.GasVolume), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.GasVolume));
                 var result = summarization.Execute(group);
             });
         }
@@ -416,9 +440,9 @@ namespace Emceelee.Measurement.Summarization.Test
             Parallel.ForEach(results, group =>
             {
                 var summarization = new Summarization<Quantity>();
-                summarization.Configure("FlowTime", "FlowTime", new SumRule<Quantity>());
-                summarization.Configure("Volume", "GasVolume", new SumRule<Quantity>());
-                summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.GasVolume));
+                summarization.Configure(nameof(Summary.FlowTime), nameof(Quantity.FlowTime), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.Volume), nameof(Quantity.GasVolume), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.GasVolume));
                 var result = summarization.Execute(group);
             });
         }
@@ -433,9 +457,9 @@ namespace Emceelee.Measurement.Summarization.Test
             Parallel.ForEach(results, group =>
             {
                 var summarization = new Summarization<Quantity>();
-                summarization.Configure("FlowTime", "FlowTime", new SumRule<Quantity>());
-                summarization.Configure("Volume", "GasVolume", new SumRule<Quantity>());
-                summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.GasVolume));
+                summarization.Configure(nameof(Summary.FlowTime), nameof(Quantity.FlowTime), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.Volume), nameof(Quantity.GasVolume), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.GasVolume));
                 var result = summarization.Execute(group);
             });
         }
@@ -451,9 +475,9 @@ namespace Emceelee.Measurement.Summarization.Test
             Parallel.ForEach(results, group =>
             {
                 var summarization = new Summarization<Quantity>();
-                summarization.Configure("FlowTime", "FlowTime", new SumRule<Quantity>());
-                summarization.Configure("Volume", "GasVolume", new SumRule<Quantity>());
-                summarization.Configure("HeatingValue", "HeatingValue", new WeightedAverageRule<Quantity>(q => q.GasVolume));
+                summarization.Configure(nameof(Summary.FlowTime), nameof(Quantity.FlowTime), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.Volume), nameof(Quantity.GasVolume), new SumRule<Quantity>());
+                summarization.Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.GasVolume));
                 var result = summarization.Execute(group);
             });
         }

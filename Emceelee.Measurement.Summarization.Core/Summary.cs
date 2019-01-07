@@ -23,5 +23,7 @@ namespace Emceelee.Measurement.Summarization.Core
         public double? HeatingValue { get; set; }
         public string Comment { get; set; }
         public int Count { get; set; }
+
+        public AggregateException Exceptions { get; set; }
     }
 }

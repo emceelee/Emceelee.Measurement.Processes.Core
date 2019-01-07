@@ -20,14 +20,14 @@ namespace Emceelee.Measurement.Summarization.Core
             _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, inputDelegate, rules));
         }
 
-        public void Configure<TProperty>(Action<Summary, TProperty> summaryDelegate, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
+        public void Configure<TProperty>(string summaryProperty, Action<Summary, TProperty> summaryDelegate, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
         {
-            _configs.Add(new SummaryConfig<TObj, TProperty>(summaryDelegate, inputProperty, rules));
+            _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, summaryDelegate, inputProperty, rules));
         }
 
-        public void Configure<TProperty>(Action<Summary, TProperty> summaryDelegate, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
+        public void Configure<TProperty>(string summaryProperty, Action<Summary, TProperty> summaryDelegate, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
         {
-            _configs.Add(new SummaryConfig<TObj, TProperty>(summaryDelegate, inputDelegate, rules));
+            _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, summaryDelegate, inputDelegate, rules));
         }
 
         public Summary Execute(SummaryGroup<TObj> group)
@@ -37,10 +37,23 @@ namespace Emceelee.Measurement.Summarization.Core
             if(records.ToList().Count > 0)
             {
                 var summary = new Summary(group.Context);
+                var errors = new List<Exception>();
 
-                foreach(var config in _configs)
+                foreach (var config in _configs)
                 {
-                    config.Execute(summary, records);
+                    try
+                    {
+                        config.Execute(summary, records);
+                    }
+                    catch(Exception ex)
+                    {
+                        errors.Add(new SummaryException(config.SummaryProperty, ex));
+                    }
+                }
+
+                if(errors.Any())
+                {
+                    summary.Exceptions = new AggregateException(errors);
                 }
 
                 return summary;

@@ -49,6 +49,7 @@
     <Compile Include="Summary.cs" />
     <Compile Include="SummaryConfig.cs" />
     <Compile Include="SummaryContext.cs" />
+    <Compile Include="SummaryException.cs" />
     <Compile Include="SummaryGroup.cs" />
     <Compile Include="SummaryInfo.cs" />
   </ItemGroup>

@@ -8,6 +8,8 @@ namespace Emceelee.Measurement.Summarization.Core
 {
     public interface ISummaryConfig<TObj>
     {
+        string SummaryProperty { get; }
+
         void Execute(Summary summary, IEnumerable<TObj> records);
     }
 
@@ -27,17 +29,17 @@ namespace Emceelee.Measurement.Summarization.Core
             Setter = Utility.CreateSetterDelegate<Summary, TProperty>(summaryProperty);
         }
 
-        public SummaryConfig(Action<Summary, TProperty> summaryDelegate, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
+        public SummaryConfig(string summaryProperty, Action<Summary, TProperty> summaryDelegate, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
             : base(inputProperty, rules)
         {
-            SummaryProperty = string.Empty;
+            SummaryProperty = summaryProperty;
             Setter = summaryDelegate;
         }
 
-        public SummaryConfig(Action<Summary, TProperty> summaryDelegate, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
+        public SummaryConfig(string summaryProperty, Action<Summary, TProperty> summaryDelegate, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
             : base(inputDelegate, rules)
         {
-            SummaryProperty = string.Empty;
+            SummaryProperty = summaryProperty;
             Setter = summaryDelegate;
         }
 
