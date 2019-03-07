@@ -34,12 +34,9 @@ namespace Emceelee.Measurement.Summarization.Test
 
         public static Summarization<Quantity> GenerateStandardSummarization()
         {
-            var delegateProductionDateStart = new DelegateRule<Quantity, DateTime?>((r, context) => r.OrderBy(q => q.ProductionDateStart).FirstOrDefault()?.ProductionDateStart);
-            var delegateProductionDateEnd = new DelegateRule<Quantity, DateTime?>((r, context) => r.OrderByDescending(q => q.ProductionDateEnd).FirstOrDefault()?.ProductionDateEnd);
-
             var summarization = new Summarization<Quantity>()
-                .Configure(nameof(Summary.ProductionDateStart), delegateProductionDateStart.NullDelegate, delegateProductionDateStart)
-                .Configure(nameof(Summary.ProductionDateEnd), delegateProductionDateEnd.NullDelegate, delegateProductionDateEnd)
+                .Configure(nameof(Summary.ProductionDateStart), nameof(Quantity.ProductionDateStart), new FirstOrDefaultRule<Quantity, DateTime>(q => q.ProductionDateStart))
+                .Configure(nameof(Summary.ProductionDateEnd), nameof(Quantity.ProductionDateEnd), new FirstOrDefaultRule<Quantity, DateTime>(q => q.ProductionDateEnd))
                 .Configure(nameof(Summary.FlowTime), nameof(Quantity.FlowTime), new SumRule<Quantity>())
                 .Configure(nameof(Summary.Volume), nameof(Quantity.GasVolume), new SumRule<Quantity>())
                 .Configure(nameof(Summary.HeatingValue), nameof(Quantity.HeatingValue), new WeightedAverageRule<Quantity>(q => q.GasVolume));

@@ -45,6 +45,8 @@
     <Compile Include="Rules\ConstantRule.cs" />
     <Compile Include="Rules\DelegateRule.cs" />
     <Compile Include="Rules\CeilingRule.cs" />
+    <Compile Include="Rules\LastOrDefaultRule.cs" />
+    <Compile Include="Rules\FirstOrDefaultRule.cs" />
     <Compile Include="Rules\FloorRule.cs" />
     <Compile Include="Rules\RoundRule.cs" />
     <Compile Include="Rules\SimpleAverageRule.cs" />

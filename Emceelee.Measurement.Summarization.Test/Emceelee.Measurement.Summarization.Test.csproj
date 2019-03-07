@@ -52,6 +52,8 @@
     <Compile Include="ExceptionRule.cs" />
     <Compile Include="InitializeAndCleanup.cs" />
     <Compile Include="Quantity.cs" />
+    <Compile Include="Rules\LastOrDefaultRuleTest.cs" />
+    <Compile Include="Rules\FirstOrDefaultRuleTest.cs" />
     <Compile Include="Rules\InventoryClosingRuleTest.cs" />
     <Compile Include="Rules\RoundRuleTest.cs" />
     <Compile Include="Rules\FloorRuleTest.cs" />

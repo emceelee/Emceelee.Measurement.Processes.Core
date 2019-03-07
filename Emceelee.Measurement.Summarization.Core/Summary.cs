@@ -14,8 +14,8 @@ namespace Emceelee.Measurement.Summarization.Core
             Context = sc;
         }
 
-        public DateTime? ProductionDateStart { get; set; }
-        public DateTime? ProductionDateEnd { get; set; }
+        public DateTime ProductionDateStart { get; set; }
+        public DateTime ProductionDateEnd { get; set; }
         public string ObjectId { get; set; }
         public double? FlowTime { get; set; }
         public double? Volume { get; set; }
