@@ -9,7 +9,7 @@ namespace Emceelee.Summarization.Core.Rules
 {
     public class WeightedAverageRule<T> : SummaryRuleBase<T, double?>
     {
-        public Func<T, double?> WeightFunction { get; }
+        private Func<T, double?> WeightFunction { get; }
 
         public WeightedAverageRule(Func<T, double?> weightFunc)
         {
@@ -22,16 +22,24 @@ namespace Emceelee.Summarization.Core.Rules
 
             if (records.Any(t => func(t) != null))
             {
-                double weightedSum = records.Sum(t => (func(t) ?? 0) * (WeightFunction(t) ?? 0));
-                double denominator = records.Sum(t => WeightFunction(t) ?? 0);
-                if(denominator != 0)
+                if(WeightFunction != null)
                 {
-                    result = weightedSum / denominator;
-                    return true;
-                }
+                    double weightedSum = records.Sum(t => (func(t) ?? 0) * (WeightFunction(t) ?? 0));
+                    double denominator = records.Sum(t => WeightFunction(t) ?? 0);
+                    if (denominator != 0)
+                    {
+                        result = weightedSum / denominator;
+                        return true;
+                    }
 
-                //Can't calculate a weighted average
-                return false;
+                    //Can't calculate a weighted average
+                    return false;
+                }
+                //If no weight function is provided, fall back on a simple average
+                else
+                {
+                    return new SimpleAverageRule<T>().Execute(records, func, context, out result);
+                }
             }
             return true;
         }

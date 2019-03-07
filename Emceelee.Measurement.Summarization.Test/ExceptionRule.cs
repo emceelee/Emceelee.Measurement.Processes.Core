@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Emceelee.Summarization.Core;
+using Emceelee.Summarization.Core.Rules;
 
 namespace Emceelee.Measurement.Summarization.Test
 {

@@ -14,6 +14,8 @@ namespace Emceelee.Measurement.Summarization.Core
             Context = sc;
         }
 
+        public DateTime? ProductionDateStart { get; set; }
+        public DateTime? ProductionDateEnd { get; set; }
         public string ObjectId { get; set; }
         public double? FlowTime { get; set; }
         public double? Volume { get; set; }
@@ -25,5 +27,12 @@ namespace Emceelee.Measurement.Summarization.Core
         public int Count { get; set; }
 
         public AggregateException Exceptions { get; set; }
+        public bool HasExceptions
+        {
+            get
+            {
+                return (Exceptions?.InnerExceptions?.Count ?? 0) > 0;
+            }
+        }
     }
 }

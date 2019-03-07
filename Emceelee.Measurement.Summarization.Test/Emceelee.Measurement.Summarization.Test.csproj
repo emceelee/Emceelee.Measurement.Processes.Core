@@ -50,8 +50,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExceptionRule.cs" />
+    <Compile Include="InitializeAndCleanup.cs" />
+    <Compile Include="Quantity.cs" />
+    <Compile Include="Rules\DelegateRuleTest.cs" />
+    <Compile Include="Rules\InventoryOpeningRuleTest.cs" />
+    <Compile Include="Rules\SimpleAverageRuleTest.cs" />
+    <Compile Include="Rules\SummaryRuleBaseTest.cs" />
+    <Compile Include="Rules\SumRuleTest.cs" />
+    <Compile Include="Rules\WeightedAverageRuleTest.cs" />
     <Compile Include="SummarizationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

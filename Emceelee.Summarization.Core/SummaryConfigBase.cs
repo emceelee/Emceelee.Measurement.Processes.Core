@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using Emceelee.Summarization.Core.Rules;
+
 namespace Emceelee.Summarization.Core
 {
     public class SummaryConfigBase<TObj, TProperty>
@@ -31,6 +33,7 @@ namespace Emceelee.Summarization.Core
             TProperty result = default(TProperty);
             bool success = false;
 
+            //TODO: Handle exceptions by rolling into an AggregateException here
             //execute rules until success
             foreach (var rule in Rules)
             {

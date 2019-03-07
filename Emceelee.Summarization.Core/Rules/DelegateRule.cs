@@ -10,7 +10,7 @@ namespace Emceelee.Summarization.Core.Rules
 {
     public class DelegateRule<TObj, TProperty> : SummaryRuleBase<TObj, TProperty>
     {
-        public Func<IEnumerable<TObj>, ISummaryContext, TProperty> SummaryFunction { get; }
+        private Func<IEnumerable<TObj>, ISummaryContext, TProperty> SummaryFunction { get; }
         public DelegateRule(Func<IEnumerable<TObj>, ISummaryContext, TProperty> func)
         {
             SummaryFunction = func;
@@ -19,7 +19,7 @@ namespace Emceelee.Summarization.Core.Rules
         {
             result = default(TProperty);
 
-            if(SummaryFunction != null)
+            if (SummaryFunction != null)
             {
                 result = SummaryFunction(records, context);
                 return true;
@@ -27,5 +27,7 @@ namespace Emceelee.Summarization.Core.Rules
 
             return false;
         }
+
+        public Func<TObj, TProperty> NullDelegate { get { return null; } }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using Emceelee.Summarization.Core;
+using Emceelee.Summarization.Core.Rules;
 
 namespace Emceelee.Measurement.Summarization.Core
 {

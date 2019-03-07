@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Emceelee.Summarization.Core;
+using Emceelee.Summarization.Core.Rules;
 
 namespace Emceelee.Measurement.Summarization.Core
 {
@@ -10,24 +10,28 @@ namespace Emceelee.Measurement.Summarization.Core
     {
         private List<ISummaryConfig<TObj>> _configs = new List<ISummaryConfig<TObj>>();
 
-        public void Configure<TProperty>(string summaryProperty, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
+        public Summarization<TObj> Configure<TProperty>(string summaryProperty, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
         {
             _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, inputProperty, rules));
+            return this;
         }
 
-        public void Configure<TProperty>(string summaryProperty, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
+        public Summarization<TObj> Configure<TProperty>(string summaryProperty, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
         {
             _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, inputDelegate, rules));
+            return this;
         }
 
-        public void Configure<TProperty>(string summaryProperty, Action<Summary, TProperty> summaryDelegate, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
+        public Summarization<TObj> Configure<TProperty>(string summaryProperty, Action<Summary, TProperty> summaryDelegate, string inputProperty, params SummaryRuleBase<TObj, TProperty>[] rules)
         {
             _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, summaryDelegate, inputProperty, rules));
+            return this;
         }
 
-        public void Configure<TProperty>(string summaryProperty, Action<Summary, TProperty> summaryDelegate, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
+        public Summarization<TObj> Configure<TProperty>(string summaryProperty, Action<Summary, TProperty> summaryDelegate, Func<TObj, TProperty> inputDelegate, params SummaryRuleBase<TObj, TProperty>[] rules)
         {
             _configs.Add(new SummaryConfig<TObj, TProperty>(summaryProperty, summaryDelegate, inputDelegate, rules));
+            return this;
         }
 
         public Summary Execute(SummaryGroup<TObj> group)
@@ -59,11 +63,6 @@ namespace Emceelee.Measurement.Summarization.Core
                 return summary;
             }
 
-            return null;
-        }
-
-        public Func<TObj, TProperty> GetNullDelegate<TProperty>()
-        {
             return null;
         }
     }
