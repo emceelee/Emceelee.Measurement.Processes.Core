@@ -13,6 +13,12 @@ namespace Emceelee.Measurement.Summarization.Test
     [TestClass]
     public class SummarizationTest
     {
+        [ClassInitialize]
+        public static void Initialize(TestContext tc)
+        {
+            TestData.Initialize();
+        }
+
         #region Configure
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]

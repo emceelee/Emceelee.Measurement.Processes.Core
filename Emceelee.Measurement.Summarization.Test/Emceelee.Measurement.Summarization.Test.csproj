@@ -52,10 +52,15 @@
     <Compile Include="ExceptionRule.cs" />
     <Compile Include="InitializeAndCleanup.cs" />
     <Compile Include="Quantity.cs" />
+    <Compile Include="Rules\InventoryClosingRuleTest.cs" />
+    <Compile Include="Rules\RoundRuleTest.cs" />
+    <Compile Include="Rules\FloorRuleTest.cs" />
+    <Compile Include="Rules\CeilingRuleTest.cs" />
     <Compile Include="Rules\DelegateRuleTest.cs" />
     <Compile Include="Rules\InventoryOpeningRuleTest.cs" />
     <Compile Include="Rules\SimpleAverageRuleTest.cs" />
     <Compile Include="Rules\SummaryRuleBaseTest.cs" />
+    <Compile Include="Rules\ConstantRuleTest.cs" />
     <Compile Include="Rules\SumRuleTest.cs" />
     <Compile Include="Rules\WeightedAverageRuleTest.cs" />
     <Compile Include="SummarizationTest.cs" />

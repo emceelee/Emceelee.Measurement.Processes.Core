@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Emceelee.Summarization.Core.Rules
 {
-    public class CeilRule<T> : SummaryRuleBase<T, double?>
+    public class CeilingRule<T> : SummaryRuleBase<T, double?>
     {
         private SummaryRuleBase<T, double?> InternalRule { get; }
 
-        public CeilRule(SummaryRuleBase<T, double?> internalRule)
+        public CeilingRule(SummaryRuleBase<T, double?> internalRule)
         {
             InternalRule = internalRule;
         }

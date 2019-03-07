@@ -11,42 +11,42 @@ using Emceelee.Measurement.Summarization.Core.Rules;
 namespace Emceelee.Measurement.Summarization.Test.Rules
 {
     [TestClass]
-    public class InventoryOpeningRuleTest
+    public class InventoryClosingRuleTest
     {
         [TestMethod]
         public void Execute_Success()
         {
             var records = new List<Quantity>();
-            records.Add(new Quantity() { GasVolume = 150, ProductionDateStart = new DateTime(2018, 1, 1, 7, 0, 0, DateTimeKind.Utc) });
-            records.Add(new Quantity() { GasVolume = 200, ProductionDateStart = new DateTime(2018, 1, 1, 7, 6, 0, DateTimeKind.Utc) });
-            records.Add(new Quantity() { GasVolume = 250, ProductionDateStart = new DateTime(2018, 1, 1, 7, 12, 0, DateTimeKind.Utc) });
+            records.Add(new Quantity() { GasVolume = 150, ProductionDateEnd = new DateTime(2018, 2, 1, 6, 48, 0, DateTimeKind.Utc) });
+            records.Add(new Quantity() { GasVolume = 200, ProductionDateEnd = new DateTime(2018, 2, 1, 6, 54, 0, DateTimeKind.Utc) });
+            records.Add(new Quantity() { GasVolume = 250, ProductionDateEnd = new DateTime(2018, 2, 1, 7, 0, 0, DateTimeKind.Utc) });
 
             var context = new SummaryContext(7,
                     new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)));
 
-            var rule = new InventoryOpeningRule<Quantity>(q => q.ProductionDateStart);
+            var rule = new InventoryClosingRule<Quantity>(q => q.ProductionDateEnd);
 
             double? result = null;
             var success = rule.Execute(records, (q) => q.GasVolume, context, out result);
 
             Assert.IsTrue(success);
-            Assert.AreEqual(150, result);
+            Assert.AreEqual(250, result);
         }
 
         [TestMethod]
         public void Execute_Fail()
         {
             var records = new List<Quantity>();
-            //records.Add(new Quantity() { GasVolume = 150, ProductionDateStart = new DateTime(2018, 1, 1, 7, 0, 0, DateTimeKind.Utc) });
-            records.Add(new Quantity() { GasVolume = 200, ProductionDateStart = new DateTime(2018, 1, 1, 7, 6, 0, DateTimeKind.Utc) });
-            records.Add(new Quantity() { GasVolume = 250, ProductionDateStart = new DateTime(2018, 1, 1, 7, 12, 0, DateTimeKind.Utc) });
+            records.Add(new Quantity() { GasVolume = 150, ProductionDateEnd = new DateTime(2018, 1, 2, 6, 48, 0, DateTimeKind.Utc) });
+            records.Add(new Quantity() { GasVolume = 200, ProductionDateEnd = new DateTime(2018, 1, 2, 6, 54, 0, DateTimeKind.Utc) });
+            //records.Add(new Quantity() { GasVolume = 250, ProductionDateEnd = new DateTime(2018, 1, 2, 7, 0, 0, DateTimeKind.Utc) });
 
             var context = new SummaryContext(7,
                     new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)));
 
-            var rule = new InventoryOpeningRule<Quantity>(q => q.ProductionDateStart);
+            var rule = new InventoryClosingRule<Quantity>(q => q.ProductionDateEnd);
 
             double? result = null;
             var success = rule.Execute(records, (q) => q.GasVolume, context, out result);

@@ -92,6 +92,7 @@ namespace Emceelee.Measurement.Summarization.Test.Rules
             var success = rule.Execute(Records, (q) => q.HeatingValue, out result);
 
             Assert.IsFalse(success);
+            Assert.IsNull(result);
         }
     }
 }

@@ -41,6 +41,7 @@ namespace Emceelee.Measurement.Summarization.Test.Rules
             double? result = null;
             var success = rule.Execute(records, (q) => q.HeatingValue, out result);
 
+            Assert.IsTrue(success);
             Assert.AreEqual(1500, result);
         }
     }

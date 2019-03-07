@@ -14,7 +14,6 @@ namespace Emceelee.Measurement.Summarization.Test
         [AssemblyInitialize]
         public static void Initialize(TestContext tc)
         {
-            TestData.Initialize();
         }
     }
 }

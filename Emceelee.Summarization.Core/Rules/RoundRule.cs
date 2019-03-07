@@ -12,7 +12,6 @@ namespace Emceelee.Summarization.Core.Rules
         private int Decimals { get; }
         private MidpointRounding Mode { get; }
 
-
         public RoundRule(SummaryRuleBase<T, double?> internalRule, int decimals = 0, MidpointRounding mode = MidpointRounding.ToEven)
         {
             InternalRule = internalRule;

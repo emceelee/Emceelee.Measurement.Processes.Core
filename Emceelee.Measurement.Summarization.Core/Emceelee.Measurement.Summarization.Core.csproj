@@ -43,6 +43,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="IMeasurementGroupable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rules\InventoryClosingRule.cs" />
     <Compile Include="Rules\InventoryOpeningRule.cs" />
     <Compile Include="Rules\MeasurementSummaryRuleBase.cs" />
     <Compile Include="Summarization.cs" />
