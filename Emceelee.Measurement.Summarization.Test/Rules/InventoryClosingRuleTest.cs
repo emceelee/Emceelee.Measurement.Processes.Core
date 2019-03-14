@@ -25,7 +25,7 @@ namespace Emceelee.Measurement.Summarization.Test.Rules
                     new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)));
 
-            var rule = new InventoryClosingRule<Quantity>(q => q.ProductionDateEnd);
+            var rule = new InventoryClosingRule<Quantity, double?>(q => q.ProductionDateEnd);
 
             double? result = null;
             var success = rule.Execute(records, (q) => q.GasVolume, context, out result);
@@ -46,7 +46,7 @@ namespace Emceelee.Measurement.Summarization.Test.Rules
                     new SummaryInfo("Meter",
                         new DateTime(2018, 1, 1)));
 
-            var rule = new InventoryClosingRule<Quantity>(q => q.ProductionDateEnd);
+            var rule = new InventoryClosingRule<Quantity, double?>(q => q.ProductionDateEnd);
 
             double? result = null;
             var success = rule.Execute(records, (q) => q.GasVolume, context, out result);

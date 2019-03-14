@@ -49,7 +49,7 @@ namespace Emceelee.Measurement.Summarization.Test.Rules
         }
 
         [TestMethod]
-        public void Execute_Success_NullRecords()
+        public void Execute_Success_NullValue()
         {
             var records = new List<Quantity>();
             records.Add(new Quantity() { FlowTime = 1, GasVolume = 3, HeatingValue = 1000 });
@@ -60,10 +60,28 @@ namespace Emceelee.Measurement.Summarization.Test.Rules
             var rule = new WeightedAverageRule<Quantity>(q => q.FlowTime);
 
             double? result = null;
-            var success = rule.Execute(Records, (q) => q.HeatingValue, out result);
+            var success = rule.Execute(records, (q) => q.HeatingValue, out result);
 
             Assert.IsTrue(success);
             Assert.AreEqual(1750, result);
+        }
+
+        [TestMethod]
+        public void Execute_Success_NullResult()
+        {
+            var records = new List<Quantity>();
+            records.Add(new Quantity() { FlowTime = 1, GasVolume = 3 });
+            records.Add(new Quantity() { FlowTime = 3, GasVolume = 1 });
+            records.Add(new Quantity());
+
+            //weight HV by FlowTime
+            var rule = new WeightedAverageRule<Quantity>(q => q.FlowTime);
+
+            double? result = null;
+            var success = rule.Execute(records, (q) => q.HeatingValue, out result);
+
+            Assert.IsTrue(success);
+            Assert.IsNull(result);
         }
 
         [TestMethod]

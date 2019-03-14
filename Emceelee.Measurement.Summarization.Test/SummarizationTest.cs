@@ -122,7 +122,7 @@ namespace Emceelee.Measurement.Summarization.Test
         #region Execute
 
         [TestMethod]
-        public void Execufte_NoRecords()
+        public void Execute_NoRecords()
         {
             var records = new List<Quantity>();
             var group = CreateDummySummaryGroup(records);
@@ -189,7 +189,7 @@ namespace Emceelee.Measurement.Summarization.Test
         }
 
         [TestMethod]
-        //[Timeout(2000)]
+        [Timeout(2000)]
         public void PerformanceTest_Daily()
         {
             var results = TestData.Data.CreateDailySummaryGroups(0);

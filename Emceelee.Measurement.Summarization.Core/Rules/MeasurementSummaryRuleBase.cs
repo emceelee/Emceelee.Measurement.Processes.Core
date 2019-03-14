@@ -9,11 +9,11 @@ using Emceelee.Summarization.Core.Rules;
 
 namespace Emceelee.Measurement.Summarization.Core.Rules
 {
-    public abstract class MeasurementSummaryRuleBase<T> : SummaryRuleBase<T, double?>
+    public abstract class MeasurementSummaryRuleBase<TObj, TProp> : SummaryRuleBase<TObj, TProp>
     {
-        protected override bool InternalExecute(IEnumerable<T> records, Func<T, double?> func, ISummaryContext context, out double? result)
+        protected override bool InternalExecute(IEnumerable<TObj> records, Func<TObj, TProp> func, ISummaryContext context, out TProp result)
         {
-            result = null;
+            result = default(TProp);
 
             if(context is SummaryContext summaryContext)
             {
@@ -23,6 +23,6 @@ namespace Emceelee.Measurement.Summarization.Core.Rules
             return false;
         }
 
-        protected abstract bool InternalExecute(IEnumerable<T> records, Func<T, double?> func, SummaryContext context, out double? result);
+        protected abstract bool InternalExecute(IEnumerable<TObj> records, Func<TObj, TProp> func, SummaryContext context, out TProp result);
     }
 }

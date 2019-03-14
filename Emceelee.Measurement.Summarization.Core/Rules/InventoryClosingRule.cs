@@ -8,20 +8,20 @@ using Emceelee.Summarization.Core;
 
 namespace Emceelee.Measurement.Summarization.Core.Rules
 {
-    public class InventoryClosingRule<T> : MeasurementSummaryRuleBase<T> where T : IMeasurementGroupable
+    public class InventoryClosingRule<TObj, TProp> : MeasurementSummaryRuleBase<TObj, TProp> where TObj : IMeasurementGroupable
     {
-        public Func<T, DateTime> DateFunction { get; }
+        public Func<TObj, DateTime> DateFunction { get; }
 
-        public InventoryClosingRule(Func<T, DateTime> dateFunc)
+        public InventoryClosingRule(Func<TObj, DateTime> dateFunc)
         {
             DateFunction = dateFunc;
         }
 
-        protected override bool InternalExecute(IEnumerable<T> records, Func<T, double?> func, SummaryContext summaryContext, out double? result)
+        protected override bool InternalExecute(IEnumerable<TObj> records, Func<TObj, TProp> func, SummaryContext summaryContext, out TProp result)
         {
-            result = null;
+            result = default(TProp);
 
-            T record = records.FirstOrDefault(t => DateFunction(t) == summaryContext.ProductionDateEnd);
+            TObj record = records.FirstOrDefault(t => DateFunction(t) == summaryContext.ProductionDateEnd);
             if(record != null)
             {
                 result = func(record);

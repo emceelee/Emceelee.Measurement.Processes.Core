@@ -29,7 +29,7 @@ namespace Emceelee.Measurement.Summarization.Test.Rules
         }
 
         [TestMethod]
-        public void Execute_Success_NullRecords()
+        public void Execute_Success_NullValue()
         {
             var records = new List<Quantity>();
             records.Add(new Quantity() { HeatingValue = 1000 });
@@ -43,6 +43,23 @@ namespace Emceelee.Measurement.Summarization.Test.Rules
 
             Assert.IsTrue(success);
             Assert.AreEqual(1500, result);
+        }
+
+        [TestMethod]
+        public void Execute_Success_NullResult()
+        {
+            var records = new List<Quantity>();
+            records.Add(new Quantity());
+            records.Add(new Quantity());
+            records.Add(new Quantity());
+
+            var rule = new SimpleAverageRule<Quantity>();
+
+            double? result = null;
+            var success = rule.Execute(records, (q) => q.HeatingValue, out result);
+
+            Assert.IsTrue(success);
+            Assert.IsNull(result);
         }
     }
 }
